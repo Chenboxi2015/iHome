@@ -1,9 +1,5 @@
-from flask import Blueprint
+from flask import Blueprint, session
 
 api = Blueprint('api', __name__)
-from . import *
-
-
-@api.route('/')
-def index():
-    return 'index'
+import index, verify_code
+from ihome.models import *
