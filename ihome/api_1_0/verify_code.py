@@ -11,7 +11,7 @@ from ihome.models import User
 from ihome.libs.yuntongxin.sms import CCP
 
 
-# /api/v1_0/image_codes/image_code_id
+# /api/v1_0/image_codes/image_code_id  获取图片验证码
 @api.route('/image_codes/<image_code_id>')
 def get_image_codes(image_code_id):
     # 前端传递uuid -->服务器生成验证码(文本和图片)--> 存储到redis中:image_code_id:text--> 返回图片数据
@@ -26,7 +26,7 @@ def get_image_codes(image_code_id):
         # 记录错误日志
         logging.error(e)
         resp_dict = {
-            'errcode': RET.DBERR,
+            'errno': RET.DBERR,
             'errmsg': '设置redis错误'
         }
         return jsonify(resp_dict)
@@ -37,8 +37,8 @@ def get_image_codes(image_code_id):
     return resp
 
 
-# 短信验证码
-# /api/v1_0/sms_codes/?mobile=18204681825&code=45DR&codeId=738e44-e814-4225-9993-96fa8feaf9fb
+# 发送短信验证码
+# /api/v1_0/sms_codes/18204681825?code=45DR&codeId=738e44-e814-4225-9993-96fa8feaf9fb
 @api.route('/sms_codes/<re(r"1[345678]\d{9}"):mobile>')
 def get_sms_codes(mobile):
     # 获取参数
@@ -48,7 +48,7 @@ def get_sms_codes(mobile):
     # 参数校验
     if not all([code, codeId]):
         resp = {
-            'errcode': RET.DATAERR,
+            'errno': RET.DATAERR,
             'errmsg': '数据不完整'
         }
         return jsonify(resp)
@@ -61,7 +61,7 @@ def get_sms_codes(mobile):
     except Exception as e:
         logging.error(e)
         resp = {
-            'errcode': RET.DBERR,
+            'errno': RET.DBERR,
             'errmsg': '获取图片验证码失败'
         }
         return jsonify(resp)
@@ -79,7 +79,7 @@ def get_sms_codes(mobile):
     except Exception as e:
         logging.error(e)
         resp = {
-            'errcode': RET.DBERR,
+            'errno': RET.DBERR,
             'errmsg': '删除图片验证码失败'
         }
         return jsonify(resp)
@@ -88,8 +88,8 @@ def get_sms_codes(mobile):
     if new_code.lower() != code.lower():
         # 不一致
         resp = {
-            'errcode': RET.PARAMERR,
-            'errmsg': '图片二维码填写错误'
+            'errno': RET.PARAMERR,
+            'errmsg': '图片二维码填写错误，请点击刷新后重新输入'
         }
         return jsonify(resp)
 
@@ -99,14 +99,14 @@ def get_sms_codes(mobile):
     except Exception as e:
         logging.error(e)
         resp = {
-            'errcode': RET.DBERR,
+            'errno': RET.DBERR,
             'errmsg': '查找用户信息失败'
         }
         return jsonify(resp)
     if user:
         # 用户存在
         resp = {
-            'errcode': RET.DATAEXIST,
+            'errno': RET.DATAEXIST,
             'errmsg': '该用户已存在'
         }
         return jsonify(resp)
@@ -118,7 +118,7 @@ def get_sms_codes(mobile):
     except Exception as e:
         logging.error(e)
         resp = {
-            'errcode': RET.DBERR,
+            'errno': RET.DBERR,
             'errmsg': '保存短信验证码失败'
         }
         return jsonify(resp)
@@ -128,13 +128,13 @@ def get_sms_codes(mobile):
     # 返回数据
     if status_code == '000000':
         resp = {
-            'errcode': RET.OK,
+            'errno': RET.OK,
             'errmsg': '发送短信验证码成功'
         }
         return jsonify(resp)
     else:
         resp = {
-            'errcode': RET.THIRDERR,
+            'errno': RET.THIRDERR,
             'errmsg': '发送短信验证码失败'
         }
         return jsonify(resp)

@@ -50,7 +50,7 @@ softVersion = '2013-12-26'  # 说明：REST API版本号保持不变。
 #         else:
 #             return
 
-# #
+
 # def sendTemplateSMS(to, datas, tempId):
 #     # 初始化REST SDK
 #     rest = REST(serverIP, serverPort, softVersion)
