@@ -43,7 +43,7 @@ function sendSMSCode() {
         $(".phonecode-a").attr("onclick", "sendSMSCode();");
         return;
     }
-    $.get("/api/smscode", {mobile:mobile, code:imageCode, codeId:imageCodeId}, 
+    $.get("/api/v1_0/sms_codes", {mobile:mobile, code:imageCode, codeId:imageCodeId},
         function(data){
             if (0 != data.errno) {
                 $("#image-code-err span").html(data.errmsg); 
